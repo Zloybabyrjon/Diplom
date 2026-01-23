@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Главная страница{% endblock %}
+
+{% block body %}
+<div class="text-center">
+    <h1 class="display-4 mb-4">Добро пожаловать в систему тестирования!</h1>
+    
+    {% if not app.user %}
+        <p class="lead mb-5">Пожалуйста, войдите или зарегистрируйтесь для продолжения</p>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Студент</h5>
+                        <p class="card-text">Пройти тестирование</p>
+                        <a href="{{ path('app_login') }}" class="btn btn-primary">Войти</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Преподаватель</h5>
+                        <p class="card-text">Создание и управление тестами</p>
+                        <a href="{{ path('app_login') }}" class="btn btn-primary">Войти</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <p class="lead mb-5">Добро пожаловать, {{ app.user.firstName }}!</p>
+        
+        <div class="row justify-content-center">
+            {% if app.user.groupName == 'преподаватель' %}
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Панель преподавателя</h5>
+                            <p class="card-text">Управление тестами и студентами</p>
+                            <a href="{{ path('app_teacher_panel') }}" class="btn btn-primary">Перейти</a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Мои тесты</h5>
+                            <p class="card-text">Пройти доступные тесты</p>
+                            <a href="{{ path('app_test_list') }}" class="btn btn-primary">Перейти</a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

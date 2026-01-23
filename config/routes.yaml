@@ -1,0 +1,57 @@
+# Автоматическая загрузка контроллеров с атрибутами
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+
+# Ручные маршруты (если нужны)
+app_login:
+    path: /login
+    controller: App\Controller\SecurityController::login
+    methods: [GET, POST]
+
+app_register:
+    path: /register
+    controller: App\Controller\RegistrationController::index
+    methods: [GET, POST]
+
+app_dashboard:
+    path: /dashboard
+    controller: App\Controller\DashboardController::index
+    methods: [GET]
+
+app_teacher_panel:
+    path: /teacher
+    controller: App\Controller\TeacherController::dashboard
+    methods: [GET]
+
+app_test_list:
+    path: /tests
+    controller: App\Controller\TestController::list
+    methods: [GET]
+
+app_test_take:
+    path: /test/{id}
+    controller: App\Controller\TestController::take
+    methods: [GET, POST]
+
+app_test_result:
+    path: /test/{id}/result
+    controller: App\Controller\TestController::result
+    methods: [GET]
+
+app_logout:
+    path: /logout
+    methods: [GET]
+
+# API маршруты (если нужны AJAX запросы)
+api_register:
+    path: /api/register
+    controller: App\Controller\Api\RegistrationController::register
+    methods: [POST]
+
+api_create_test:
+    path: /api/test/create
+    controller: App\Controller\Api\TestController::create
+    methods: [POST]

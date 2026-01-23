@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Вход в систему{% endblock %}
+
+{% block stylesheets %}
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 20px;
+    }
+    
+    .login-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        padding: 40px;
+        width: 100%;
+        max-width: 400px;
+        margin: auto;
+    }
+    
+    .form-floating {
+        margin-bottom: 1rem;
+    }
+    
+    .user-type-buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .user-type-buttons .btn {
+        flex: 1;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="login-card">
+        <h2 class="mb-4 text-center">Вход в систему</h2>
+        
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+        
+        <form method="post" action="{{ path('app_login') }}">
+            <div class="form-floating">
+                <input type="email" value="{{ last_username }}" name="email" id="inputEmail" 
+                       class="form-control" placeholder="Email" autocomplete="email" required autofocus>
+                <label for="inputEmail">Email</label>
+            </div>
+            
+            <div class="form-floating">
+                <input type="password" name="password" id="inputPassword" class="form-control" 
+                       placeholder="Пароль" autocomplete="current-password" required>
+                <label for="inputPassword">Пароль</label>
+            </div>
+            
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="_remember_me" id="rememberMe">
+                    <label class="form-check-label" for="rememberMe">
+                        Запомнить меня
+                    </label>
+                </div>
+                <a href="#" class="text-decoration-none">Забыли пароль?</a>
+            </div>
+            
+            <button class="btn btn-primary w-100 py-2" type="submit">
+                Войти
+            </button>
+            
+            <div class="text-center mt-3">
+                <a href="{{ path('app_register') }}" class="text-decoration-none">
+                    Нет аккаунта? Зарегистрироваться
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

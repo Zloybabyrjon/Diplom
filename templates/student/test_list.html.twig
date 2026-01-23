@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Доступные тесты{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="mb-4">Доступные тесты</h1>
+    
+    {% if tests is empty %}
+        <div class="alert alert-info">
+            На данный момент нет доступных тестов.
+        </div>
+    {% else %}
+        <div class="row">
+            {% for test in tests %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ test.title }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ test.subject }}</h6>
+                            <p class="card-text">{{ test.description|default('Без описания') }}</p>
+                            <div class="mb-3">
+                                <span class="badge bg-info">Вопросов: {{ test.questionsCount }}</span>
+                                <span class="badge bg-secondary">Время: {{ test.timeLimit }} мин.</span>
+                            </div>
+                            {% if test.completed %}
+                                <div class="alert alert-success">
+                                    <i class="bi bi-check-circle"></i> Пройден
+                                    <br>Оценка: {{ test.score }}%
+                                </div>
+                                <a href="{{ path('app_test_result', {'id': test.id}) }}" class="btn btn-outline-primary">
+                                    Посмотреть результат
+                                </a>
+                            {% else %}
+                                <a href="{{ path('app_test_take', {'id': test.id}) }}" class="btn btn-primary">
+                                    Начать тест
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <div class="mt-4">
+        <a href="{{ path('app_home') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> На главную
+        </a>
+    </div>
+</div>
+{% endblock %}

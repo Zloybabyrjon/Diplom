@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Личный кабинет{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="mb-4">Личный кабинет</h1>
+    
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-person-circle" style="font-size: 4rem; color: #6c757d;"></i>
+                    </div>
+                    {% if app.user %}
+                        <h4>{{ app.user.firstName ?? '' }} {{ app.user.lastName ?? '' }}</h4>
+                        <p class="text-muted">{{ app.user.email ?? '' }}</p>
+                        <div class="mb-3">
+                            <span class="badge bg-info">{{ app.user.groupName ?? 'Гость' }}</span>
+                        </div>
+                        <a href="#" class="btn btn-outline-primary btn-sm">Редактировать профиль</a>
+                    {% else %}
+                        <h4>Гость</h4>
+                        <p class="text-muted">Неавторизованный пользователь</p>
+                        <a href="{{ path('app_login') }}" class="btn btn-primary btn-sm">Войти</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Статистика</h5>
+                </div>
+                <div class="card-body">
+                    {% if app.user and app.user.groupName == 'преподаватель' %}
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <div class="display-4">{{ stats.createdTests ?? 0 }}</div>
+                                <small>Создано тестов</small>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="display-4">{{ stats.activeStudents ?? 0 }}</div>
+                                <small>Активных студентов</small>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="display-4">{{ stats.totalAttempts ?? 0 }}</div>
+                                <small>Попыток прохождения</small>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <a href="{{ path('app_teacher_panel') }}" class="btn btn-primary">
+                                Перейти в панель преподавателя
+                            </a>
+                        </div>
+                    {% elseif app.user %}
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <div class="display-4">{{ stats.completedTests ?? 0 }}</div>
+                                <small>Пройдено тестов</small>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="display-4">{{ stats.averageScore ?? 0 }}%</div>
+                                <small>Средний балл</small>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="display-4">{{ stats.lastScore ?? 0 }}%</div>
+                                <small>Последний тест</small>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <h5>Последние результаты:</h5>
+                            {% if recentResults is defined and recentResults is not empty %}
+                                <div class="list-group">
+                                    {% for result in recentResults %}
+                                        <a href="{{ path('app_test_result', {'id': result.test.id}) }}" 
+                                           class="list-group-item list-group-item-action">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h6 class="mb-1">{{ result.test.title }}</h6>
+                                                <span class="badge bg-{{ result.score >= 70 ? 'success' : result.score >= 50 ? 'warning' : 'danger' }}">
+                                                    {{ result.score }}%
+                                                </span>
+                                            </div>
+                                            <small class="text-muted">
+                                                {{ result.completedAt|date('d.m.Y H:i') }} | 
+                                                {{ result.correctAnswers }}/{{ result.totalQuestions }} правильных
+                                            </small>
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="text-muted">Нет пройденных тестов</p>
+                            {% endif %}
+                        </div>
+                        <div class="mt-4">
+                            <a href="{{ path('app_test_list') }}" class="btn btn-primary">
+                                Продолжить тестирование
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="text-center">
+                            <p>Для просмотра статистики необходимо войти в систему</p>
+                            <a href="{{ path('app_login') }}" class="btn btn-primary">Войти</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
