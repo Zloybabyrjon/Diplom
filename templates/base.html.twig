@@ -19,6 +19,8 @@
                     <span class="nav-item nav-link">
                         {{ app.user.firstName }} {{ app.user.lastName }}
                     </span>
+                    {# Ссылка на личный кабинет #}
+                    <a class="nav-item nav-link" href="{{ path('app_dashboard') }}">Личный кабинет</a>
                     <a class="nav-item nav-link" href="{{ path('app_logout') }}">
                         Выйти
                     </a>

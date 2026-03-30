@@ -26,18 +26,8 @@
         margin-bottom: 1rem;
     }
     
-    .user-type-buttons {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 20px;
-    }
-    
-    .user-type-buttons .btn {
-        flex: 1;
-    }
-    
-    .form-select {
-        padding: 1rem 0.75rem;
+    .form-check-inline {
+        margin-right: 1rem;
     }
 </style>
 {% endblock %}
@@ -47,63 +37,62 @@
     <div class="register-card">
         <h2 class="mb-4 text-center">Регистрация</h2>
         
-        <div class="user-type-buttons">
-            <button type="button" class="btn btn-outline-primary active" onclick="setUserType('student')">
-                Студент
-            </button>
-            <button type="button" class="btn btn-outline-primary" onclick="setUserType('teacher')">
-                Преподаватель
-            </button>
-        </div>
-        
-        <form id="registerForm" method="POST">
+        {{ form_start(registrationForm) }}
+
+            {# Радиокнопки выбора роли #}
+            <div class="mb-4 text-center">
+                {{ form_label(registrationForm.role) }}
+                <div class="d-flex justify-content-center gap-4 mt-2">
+                    {% for child in registrationForm.role %}
+                        <div class="form-check form-check-inline">
+                            {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}
+                            {{ form_label(child, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                        </div>
+                    {% endfor %}
+                </div>
+                {{ form_errors(registrationForm.role) }}
+            </div>
+
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="firstName" name="firstName" 
-                               placeholder="Имя" required>
-                        <label for="firstName">Имя</label>
+                        {{ form_widget(registrationForm.firstName) }}
+                        {{ form_label(registrationForm.firstName) }}
+                        {{ form_errors(registrationForm.firstName) }}
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="lastName" name="lastName" 
-                               placeholder="Фамилия" required>
-                        <label for="lastName">Фамилия</label>
+                        {{ form_widget(registrationForm.lastName) }}
+                        {{ form_label(registrationForm.lastName) }}
+                        {{ form_errors(registrationForm.lastName) }}
                     </div>
                 </div>
             </div>
             
             <div class="form-floating">
-                <input type="email" class="form-control" id="email" name="email" 
-                       placeholder="Email" required>
-                <label for="email">Email</label>
+                {{ form_widget(registrationForm.email) }}
+                {{ form_label(registrationForm.email) }}
+                {{ form_errors(registrationForm.email) }}
             </div>
             
             <div class="form-floating" id="groupField">
-                <select class="form-select" id="group" name="group" required>
-                    <option value="">Выберите группу</option>
-                    <option value="ПИ-20-1">ПИ-20-1</option>
-                    <option value="ПИ-20-2">ПИ-20-2</option>
-                    <option value="ИВТ-20-1">ИВТ-20-1</option>
-                    <option value="ИВТ-20-2">ИВТ-20-2</option>
-                </select>
-                <label for="group">Группа</label>
+                {{ form_widget(registrationForm.groupName) }}
+                {{ form_label(registrationForm.groupName) }}
+                {{ form_errors(registrationForm.groupName) }}
             </div>
             
             <div class="form-floating">
-                <input type="password" class="form-control" id="password" name="password" 
-                       placeholder="Пароль" required minlength="6">
-                <label for="password">Пароль</label>
+                {{ form_widget(registrationForm.plainPassword.first) }}
+                {{ form_label(registrationForm.plainPassword.first) }}
+                {{ form_errors(registrationForm.plainPassword.first) }}
             </div>
             
             <div class="form-floating">
-                <input type="password" class="form-control" id="confirmPassword" 
-                       placeholder="Подтверждение пароля" required>
-                <label for="confirmPassword">Подтверждение пароля</label>
+                {{ form_widget(registrationForm.plainPassword.second) }}
+                {{ form_label(registrationForm.plainPassword.second) }}
+                {{ form_errors(registrationForm.plainPassword.second) }}
             </div>
-            
-            <input type="hidden" id="userType" name="userType" value="student">
             
             <button type="submit" class="btn btn-primary w-100 py-2 mt-3">
                 Зарегистрироваться
@@ -114,49 +103,7 @@
                     Уже есть аккаунт? Войти
                 </a>
             </div>
-        </form>
+        {{ form_end(registrationForm) }}
     </div>
 </div>
-{% endblock %}
-
-{% block javascripts %}
-<script>
-    function setUserType(type) {
-        document.getElementById('userType').value = type;
-        
-        // Обновляем активные кнопки
-        document.querySelectorAll('.user-type-buttons .btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        event.target.classList.add('active');
-        
-        // Обновляем поле группы
-        const groupField = document.getElementById('groupField');
-        if (type === 'teacher') {
-            groupField.style.display = 'none';
-            document.getElementById('group').value = 'преподаватель';
-        } else {
-            groupField.style.display = 'block';
-            document.getElementById('group').value = '';
-        }
-    }
-    
-    // Валидация формы
-    document.getElementById('registerForm').addEventListener('submit', function(e) {
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-        
-        if (password !== confirmPassword) {
-            e.preventDefault();
-            alert('Пароли не совпадают!');
-            return false;
-        }
-        
-        if (password.length < 6) {
-            e.preventDefault();
-            alert('Пароль должен быть не менее 6 символов!');
-            return false;
-        }
-    });
-</script>
 {% endblock %}

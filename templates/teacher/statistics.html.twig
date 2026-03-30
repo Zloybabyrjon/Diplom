@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Статистика{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 d-md-block bg-light sidebar" style="min-height: 100vh;">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_teacher_panel') }}">
+                            <i class="bi bi-list-task"></i> Тесты
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_teacher_students') }}">
+                            <i class="bi bi-people"></i> Студенты
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ path('app_teacher_statistics') }}">
+                            <i class="bi bi-bar-chart"></i> Статистика
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="col-md-10 ms-sm-auto px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Общая статистика</h1>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card text-white bg-primary mb-3">
+                        <div class="card-header">Студенты</div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ totalStudents }}</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-success mb-3">
+                        <div class="card-header">Преподаватели</div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ totalTeachers }}</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-info mb-3">
+                        <div class="card-header">Тесты</div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ totalTests }}</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-warning mb-3">
+                        <div class="card-header">Попытки</div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ totalAttempts }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">Средний балл по всем попыткам</div>
+                        <div class="card-body">
+                            <h2>{{ avgScore }}%</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="mt-4">Статистика по тестам</h2>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Тест</th>
+                        <th>Попыток</th>
+                        <th>Средний балл</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for stat in testsStats %}
+                    <tr>
+                        <td>{{ stat.test.title }}</td>
+                        <td>{{ stat.attempts }}</td>
+                        <td>{{ stat.avgScore }}%</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="3" class="text-center">Нет данных</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </main>
+    </div>
+</div>
+{% endblock %}

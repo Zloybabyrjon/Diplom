@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Студенты{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 d-md-block bg-light sidebar" style="min-height: 100vh;">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_teacher_panel') }}">
+                            <i class="bi bi-list-task"></i> Тесты
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ path('app_teacher_students') }}">
+                            <i class="bi bi-people"></i> Студенты
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_teacher_statistics') }}">
+                            <i class="bi bi-bar-chart"></i> Статистика
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="col-md-10 ms-sm-auto px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Студенты</h1>
+            </div>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Имя</th>
+                        <th>Фамилия</th>
+                        <th>Email</th>
+                        <th>Группа</th>
+                        <th>Попыток</th>
+                        <th>Последний результат</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for item in studentData %}
+                    <tr>
+                        <td>{{ item.student.firstName }}</td>
+                        <td>{{ item.student.lastName }}</td>
+                        <td>{{ item.student.email }}</td>
+                        <td>{{ item.student.groupName }}</td>
+                        <td>{{ item.attempts }}</td>
+                        <td>
+                            {% if item.lastScore is not null %}
+                                {{ item.lastScore }}%
+                            {% else %}
+                                <span class="text-muted">Нет</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="6" class="text-center">Студенты не найдены</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </main>
+    </div>
+</div>
+{% endblock %}

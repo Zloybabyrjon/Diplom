@@ -1,0 +1,166 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ test is defined and test ? 'Редактировать тест' : 'Создать тест' }}{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .question-card {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        background: #f8f9fa;
+    }
+    .answer-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    .answer-item input[type="text"] {
+        flex: 1;
+    }
+    .answer-item input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+    }
+    .remove-btn {
+        color: #dc3545;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>{{ test is defined and test ? 'Редактировать тест' : 'Создать новый тест' }}</h1>
+
+    <form method="post" id="testForm">
+        <div class="mb-3">
+            <label for="title" class="form-label">Название теста</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{ test.title ?? '' }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Описание</label>
+            <textarea class="form-control" id="description" name="description" rows="3">{{ test.description ?? '' }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="subject" class="form-label">Предмет</label>
+            <input type="text" class="form-control" id="subject" name="subject" value="{{ test.subject ?? '' }}">
+        </div>
+
+        {# Поле для времени #}
+        <div class="mb-3">
+            <label for="timeLimit" class="form-label">Время на тест (минут)</label>
+            <input type="number" class="form-control" id="timeLimit" name="timeLimit" value="{{ test.timeLimit ?? 30 }}" min="1" step="1">
+        </div>
+
+        {# Поле выбора групп #}
+        <div class="mb-3">
+            <label class="form-label">Доступно для групп</label>
+            <select class="form-select" name="targetGroups[]" multiple size="5">
+                <option value="all" {% if test is defined and test and test.targetGroups is not empty and 'all' in test.targetGroups %}selected{% endif %}>Все группы</option>
+                <option value="ПИ-20-1" {% if test is defined and test and test.targetGroups is not empty and 'ПИ-20-1' in test.targetGroups %}selected{% endif %}>ПИ-20-1</option>
+                <option value="ПИ-20-2" {% if test is defined and test and test.targetGroups is not empty and 'ПИ-20-2' in test.targetGroups %}selected{% endif %}>ПИ-20-2</option>
+                <option value="ИВТ-20-1" {% if test is defined and test and test.targetGroups is not empty and 'ИВТ-20-1' in test.targetGroups %}selected{% endif %}>ИВТ-20-1</option>
+                <option value="ИВТ-20-2" {% if test is defined and test and test.targetGroups is not empty and 'ИВТ-20-2' in test.targetGroups %}selected{% endif %}>ИВТ-20-2</option>
+            </select>
+            <div class="form-text">Можно выбрать несколько, удерживая Ctrl (Cmd). Если выбрана "Все группы", другие игнорируются.</div>
+        </div>
+
+        <h3 class="mb-3">Вопросы</h3>
+        <div id="questions-container">
+            {% if test is defined and test %}
+                {% for question in test.questions %}
+                    {% include 'teacher/_question.html.twig' with {'question': question, 'index': loop.index0} %}
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <button type="button" class="btn btn-success mb-3" onclick="addQuestion()">
+            <i class="bi bi-plus-circle"></i> Добавить вопрос
+        </button>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Сохранить тест</button>
+            <a href="{{ path('app_teacher_panel') }}" class="btn btn-secondary">Отмена</a>
+        </div>
+    </form>
+</div>
+
+<template id="question-template">
+    <div class="question-card" data-index="__INDEX__">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Вопрос <span class="question-number">__INDEX_PLUS_ONE__</span></h5>
+            <span class="remove-btn" onclick="removeQuestion(this)">✖ Удалить вопрос</span>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Текст вопроса</label>
+            <input type="text" class="form-control" name="questions[__INDEX__][text]" required>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="form-label">Тип вопроса</label>
+                <select class="form-select" name="questions[__INDEX__][type]">
+                    <option value="single">Один правильный</option>
+                    <option value="multiple">Несколько правильных</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Баллы</label>
+                <input type="number" class="form-control" name="questions[__INDEX__][points]" value="1" min="1" step="1">
+            </div>
+        </div>
+        <div class="answers-container">
+            <label class="form-label">Варианты ответов</label>
+            <div class="answer-item">
+                <input type="text" class="form-control" name="questions[__INDEX__][answers][0]" placeholder="Вариант 1" required>
+                <input type="checkbox" name="questions[__INDEX__][correct][]" value="0" title="Правильный">
+                <span class="remove-btn" onclick="removeAnswer(this)">✖</span>
+            </div>
+            <div class="answer-item">
+                <input type="text" class="form-control" name="questions[__INDEX__][answers][1]" placeholder="Вариант 2" required>
+                <input type="checkbox" name="questions[__INDEX__][correct][]" value="1" title="Правильный">
+                <span class="remove-btn" onclick="removeAnswer(this)">✖</span>
+            </div>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addAnswer(this, __INDEX__)">
+            <i class="bi bi-plus"></i> Добавить ответ
+        </button>
+    </div>
+</template>
+
+<script>
+    let questionIndex = {{ test is defined and test ? test.questions|length : 0 }};
+
+    function addQuestion() {
+        const template = document.getElementById('question-template').innerHTML;
+        const html = template.replace(/__INDEX__/g, questionIndex).replace(/__INDEX_PLUS_ONE__/g, questionIndex + 1);
+        document.getElementById('questions-container').insertAdjacentHTML('beforeend', html);
+        questionIndex++;
+    }
+
+    function removeQuestion(btn) {
+        btn.closest('.question-card').remove();
+    }
+
+    function addAnswer(btn, qIndex) {
+        const answersContainer = btn.closest('.question-card').querySelector('.answers-container');
+        const answerCount = answersContainer.children.length;
+        const answerHtml = `
+            <div class="answer-item">
+                <input type="text" class="form-control" name="questions[${qIndex}][answers][${answerCount}]" placeholder="Вариант ${answerCount+1}" required>
+                <input type="checkbox" name="questions[${qIndex}][correct][]" value="${answerCount}" title="Правильный">
+                <span class="remove-btn" onclick="removeAnswer(this)">✖</span>
+            </div>
+        `;
+        answersContainer.insertAdjacentHTML('beforeend', answerHtml);
+    }
+
+    function removeAnswer(btn) {
+        btn.closest('.answer-item').remove();
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,428 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Тесты по программированию{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="mb-4">Тесты по программированию</h1>
+    
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="input-group">
+                <input type="text" class="form-control" id="searchTest" placeholder="Поиск тестов...">
+                <button class="btn btn-primary" type="button">
+                    <i class="bi bi-search"></i> Найти
+                </button>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <select class="form-select" id="categoryFilter">
+                <option value="all">Все языки</option>
+                <option value="python">Python</option>
+                <option value="javascript">JavaScript</option>
+                <option value="java">Java</option>
+                <option value="php">PHP</option>
+                <option value="cpp">C++</option>
+                <option value="csharp">C#</option>
+                <option value="ruby">Ruby</option>
+                <option value="go">Go</option>
+                <option value="rust">Rust</option>
+                <option value="swift">Swift</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Категория: Python -->
+        <div class="col-12 mb-4">
+            <h2 class="border-bottom pb-2">
+                <i class="bi bi-filetype-py text-primary"></i> Python
+            </h2>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Основы Python</h5>
+                            <p class="card-text">Базовые конструкции: переменные, типы данных, условные операторы, циклы</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">20 вопросов</span>
+                                <span class="badge bg-secondary">45 мин</span>
+                                <span class="badge bg-warning">Начинающий</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Функции и модули в Python</h5>
+                            <p class="card-text">Создание функций, импорт модулей, работа с библиотеками</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">15 вопросов</span>
+                                <span class="badge bg-secondary">30 мин</span>
+                                <span class="badge bg-success">Средний</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">ООП в Python</h5>
+                            <p class="card-text">Классы, объекты, наследование, полиморфизм, инкапсуляция</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">25 вопросов</span>
+                                <span class="badge bg-secondary">60 мин</span>
+                                <span class="badge bg-danger">Продвинутый</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Django Framework</h5>
+                            <p class="card-text">Создание веб-приложений на Django, модели, шаблоны, маршрутизация</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">30 вопросов</span>
+                                <span class="badge bg-secondary">75 мин</span>
+                                <span class="badge bg-success">Средний</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Алгоритмы на Python</h5>
+                            <p class="card-text">Сортировка, поиск, графы, деревья, динамическое программирование</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">20 вопросов</span>
+                                <span class="badge bg-secondary">90 мин</span>
+                                <span class="badge bg-danger">Продвинутый</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Категория: JavaScript -->
+        <div class="col-12 mb-4">
+            <h2 class="border-bottom pb-2">
+                <i class="bi bi-filetype-js text-warning"></i> JavaScript
+            </h2>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Основы JavaScript</h5>
+                            <p class="card-text">Переменные, функции, события, DOM-манипуляции</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">20 вопросов</span>
+                                <span class="badge bg-secondary">45 мин</span>
+                                <span class="badge bg-warning">Начинающий</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">ES6+ современный JavaScript</h5>
+                            <p class="card-text">Стрелочные функции, классы, промисы, async/await, деструктуризация</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">15 вопросов</span>
+                                <span class="badge bg-secondary">40 мин</span>
+                                <span class="badge bg-success">Средний</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">React.js</h5>
+                            <p class="card-text">Компоненты, хуки, состояние, props, жизненный цикл</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">25 вопросов</span>
+                                <span class="badge bg-secondary">60 мин</span>
+                                <span class="badge bg-success">Средний</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Node.js</h5>
+                            <p class="card-text">Серверный JavaScript, Express, работа с файлами, базы данных</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">20 вопросов</span>
+                                <span class="badge bg-secondary">50 мин</span>
+                                <span class="badge bg-success">Средний</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">TypeScript</h5>
+                            <p class="card-text">Типизация, интерфейсы, дженерики, декораторы</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">18 вопросов</span>
+                                <span class="badge bg-secondary">45 мин</span>
+                                <span class="badge bg-danger">Продвинутый</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Категория: Java -->
+        <div class="col-12 mb-4">
+            <h2 class="border-bottom pb-2">
+                <i class="bi bi-filetype-java text-danger"></i> Java
+            </h2>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Основы Java</h5>
+                            <p class="card-text">Синтаксис, типы данных, операторы, массивы</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">20 вопросов</span>
+                                <span class="badge bg-secondary">45 мин</span>
+                                <span class="badge bg-warning">Начинающий</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">ООП в Java</h5>
+                            <p class="card-text">Классы, объекты, наследование, интерфейсы, полиморфизм</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">18 вопросов</span>
+                                <span class="badge bg-secondary">40 мин</span>
+                                <span class="badge bg-success">Средний</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Коллекции в Java</h5>
+                            <p class="card-text">List, Set, Map, Queue, алгоритмы сортировки и поиска</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">15 вопросов</span>
+                                <span class="badge bg-secondary">35 мин</span>
+                                <span class="badge bg-success">Средний</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Многопоточность</h5>
+                            <p class="card-text">Потоки, синхронизация, concurrent коллекции</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">12 вопросов</span>
+                                <span class="badge bg-secondary">30 мин</span>
+                                <span class="badge bg-danger">Продвинутый</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Spring Framework</h5>
+                            <p class="card-text">IoC, DI, MVC, Data, Security</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">25 вопросов</span>
+                                <span class="badge bg-secondary">70 мин</span>
+                                <span class="badge bg-danger">Продвинутый</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Категория: PHP -->
+        <div class="col-12 mb-4">
+            <h2 class="border-bottom pb-2">
+                <i class="bi bi-filetype-php text-info"></i> PHP
+            </h2>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Основы PHP</h5>
+                            <p class="card-text">Синтаксис, переменные, массивы, функции</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">18 вопросов</span>
+                                <span class="badge bg-secondary">40 мин</span>
+                                <span class="badge bg-warning">Начинающий</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">ООП в PHP</h5>
+                            <p class="card-text">Классы, наследование, интерфейсы, трейты</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">15 вопросов</span>
+                                <span class="badge bg-secondary">35 мин</span>
+                                <span class="badge bg-success">Средний</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Laravel</h5>
+                            <p class="card-text">Маршрутизация, Eloquent, Blade, миграции</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">22 вопроса</span>
+                                <span class="badge bg-secondary">55 мин</span>
+                                <span class="badge bg-success">Средний</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Symfony</h5>
+                            <p class="card-text">Компоненты, Doctrine, Twig, Forms</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">20 вопросов</span>
+                                <span class="badge bg-secondary">50 мин</span>
+                                <span class="badge bg-danger">Продвинутый</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Категория: C++ -->
+        <div class="col-12 mb-4">
+            <h2 class="border-bottom pb-2">
+                <i class="bi bi-filetype-cpp text-secondary"></i> C++
+            </h2>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Основы C++</h5>
+                            <p class="card-text">Указатели, ссылки, память, ввод/вывод</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">18 вопросов</span>
+                                <span class="badge bg-secondary">45 мин</span>
+                                <span class="badge bg-warning">Начинающий</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">ООП в C++</h5>
+                            <p class="card-text">Классы, наследование, полиморфизм, виртуальные функции</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">16 вопросов</span>
+                                <span class="badge bg-secondary">40 мин</span>
+                                <span class="badge bg-success">Средний</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">STL</h5>
+                            <p class="card-text">Контейнеры, итераторы, алгоритмы</p>
+                            <div class="mb-2">
+                                <span class="badge bg-info">14 вопросов</span>
+                                <span class="badge bg-secondary">35 мин</span>
+                                <span class="badge bg-danger">Продвинутый</span>
+                            </div>
+                            <a href="#" class="btn btn-primary">Начать тест</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('searchTest').addEventListener('keyup', function() {
+    const searchText = this.value.toLowerCase();
+    const cards = document.querySelectorAll('.card');
+    
+    cards.forEach(card => {
+        const title = card.querySelector('.card-title')?.textContent.toLowerCase() || '';
+        const description = card.querySelector('.card-text')?.textContent.toLowerCase() || '';
+        
+        if (title.includes(searchText) || description.includes(searchText)) {
+            card.closest('.col-md-4').style.display = 'block';
+        } else {
+            card.closest('.col-md-4').style.display = 'none';
+        }
+    });
+});
+
+document.getElementById('categoryFilter').addEventListener('change', function() {
+    const category = this.value;
+    const categories = document.querySelectorAll('h2');
+    
+    if (category === 'all') {
+        categories.forEach(cat => {
+            cat.closest('.col-12').style.display = 'block';
+        });
+    } else {
+        categories.forEach(cat => {
+            const categoryDiv = cat.closest('.col-12');
+            if (cat.textContent.toLowerCase().includes(category)) {
+                categoryDiv.style.display = 'block';
+            } else {
+                categoryDiv.style.display = 'none';
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

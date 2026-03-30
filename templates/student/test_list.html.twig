@@ -6,33 +6,33 @@
 <div class="container">
     <h1 class="mb-4">Доступные тесты</h1>
     
-    {% if tests is empty %}
+    {% if testsData is empty %}
         <div class="alert alert-info">
             На данный момент нет доступных тестов.
         </div>
     {% else %}
         <div class="row">
-            {% for test in tests %}
+            {% for item in testsData %}
                 <div class="col-md-6 mb-4">
                     <div class="card h-100">
                         <div class="card-body">
-                            <h5 class="card-title">{{ test.title }}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">{{ test.subject }}</h6>
-                            <p class="card-text">{{ test.description|default('Без описания') }}</p>
+                            <h5 class="card-title">{{ item.test.title }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ item.test.subject }}</h6>
+                            <p class="card-text">{{ item.test.description|default('Без описания') }}</p>
                             <div class="mb-3">
-                                <span class="badge bg-info">Вопросов: {{ test.questionsCount }}</span>
-                                <span class="badge bg-secondary">Время: {{ test.timeLimit }} мин.</span>
+                                <span class="badge bg-info">Вопросов: {{ item.test.questions|length }}</span>
+                                <span class="badge bg-secondary">Время: {{ item.test.timeLimit }} мин.</span>
                             </div>
-                            {% if test.completed %}
+                            {% if item.completed %}
                                 <div class="alert alert-success">
                                     <i class="bi bi-check-circle"></i> Пройден
-                                    <br>Оценка: {{ test.score }}%
+                                    <br>Оценка: {{ item.score }}%
                                 </div>
-                                <a href="{{ path('app_test_result', {'id': test.id}) }}" class="btn btn-outline-primary">
+                                <a href="{{ path('app_test_result', {'id': item.test.id}) }}" class="btn btn-outline-primary">
                                     Посмотреть результат
                                 </a>
                             {% else %}
-                                <a href="{{ path('app_test_take', {'id': test.id}) }}" class="btn btn-primary">
+                                <a href="{{ path('app_test_take', {'id': item.test.id}) }}" class="btn btn-primary">
                                     Начать тест
                                 </a>
                             {% endif %}
