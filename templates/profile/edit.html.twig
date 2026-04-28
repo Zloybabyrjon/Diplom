@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Редактирование профиля{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .container {
+        max-width: 600px;
+        margin-top: 50px;
+    }
+    .card {
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    .btn-save {
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Редактирование профиля</h4>
+        </div>
+        <div class="card-body">
+            {{ form_start(form) }}
+                {{ form_row(form.firstName) }}
+                {{ form_row(form.lastName) }}
+                {{ form_row(form.email) }}
+                
+                {% if app.user.role == 'student' %}
+                    {{ form_row(form.groupName) }}
+                {% endif %}
+                
+                <hr>
+                <h5>Смена пароля (необязательно)</h5>
+                {{ form_row(form.plainPassword.first) }}
+                {{ form_row(form.plainPassword.second) }}
+                
+                <button type="submit" class="btn btn-primary btn-save mt-3">Сохранить изменения</button>
+            {{ form_end(form) }}
+        </div>
+        <div class="card-footer text-center">
+            <a href="{{ path('app_dashboard') }}">Вернуться в личный кабинет</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

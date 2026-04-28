@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Мой профиль{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Профиль пользователя</h3>
+                </div>
+                <div class="card-body">
+                    <p><strong>Имя:</strong> {{ user.firstName }}</p>
+                    <p><strong>Фамилия:</strong> {{ user.lastName }}</p>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Группа:</strong> {{ user.groupName }}</p>
+                    <p><strong>Роль:</strong> {{ user.role == 'teacher' ? 'Преподаватель' : 'Студент' }}</p>
+                    <a href="{{ path('app_profile_edit') }}" class="btn btn-primary">Редактировать профиль</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

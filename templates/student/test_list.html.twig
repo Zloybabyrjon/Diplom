@@ -5,7 +5,7 @@
 {% block body %}
 <div class="container">
     <h1 class="mb-4">Доступные тесты</h1>
-    
+
     {% if testsData is empty %}
         <div class="alert alert-info">
             На данный момент нет доступных тестов.
@@ -17,18 +17,18 @@
                     <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title">{{ item.test.title }}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">{{ item.test.subject }}</h6>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ item.test.subject ?? 'Без предмета' }}</h6>
                             <p class="card-text">{{ item.test.description|default('Без описания') }}</p>
                             <div class="mb-3">
                                 <span class="badge bg-info">Вопросов: {{ item.test.questions|length }}</span>
-                                <span class="badge bg-secondary">Время: {{ item.test.timeLimit }} мин.</span>
+                                <span class="badge bg-secondary">Время: {{ item.test.timeLimit ?? 'не ограничено' }} мин.</span>
                             </div>
                             {% if item.completed %}
                                 <div class="alert alert-success">
                                     <i class="bi bi-check-circle"></i> Пройден
                                     <br>Оценка: {{ item.score }}%
                                 </div>
-                                <a href="{{ path('app_test_result', {'id': item.test.id}) }}" class="btn btn-outline-primary">
+                                <a href="{{ path('app_test_result', {'id': item.attemptId}) }}" class="btn btn-outline-primary">
                                     Посмотреть результат
                                 </a>
                             {% else %}
@@ -42,7 +42,7 @@
             {% endfor %}
         </div>
     {% endif %}
-    
+
     <div class="mt-4">
         <a href="{{ path('app_home') }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left"></i> На главную

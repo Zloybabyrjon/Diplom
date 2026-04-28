@@ -4,56 +4,13 @@
 
 {% block stylesheets %}
 <style>
-    .question-card {
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        padding: 30px;
-        margin-bottom: 30px;
-    }
-    
-    .question-number {
-        display: inline-block;
-        background: #0d6efd;
-        color: white;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        text-align: center;
-        line-height: 40px;
-        margin-right: 15px;
-        font-weight: bold;
-    }
-    
-    .answer-option {
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        padding: 15px;
-        margin-bottom: 10px;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-    
-    .answer-option:hover {
-        border-color: #0d6efd;
-        background-color: #f8f9fa;
-    }
-    
-    .answer-option.selected {
-        border-color: #198754;
-        background-color: #d1e7dd;
-    }
-    
-    .progress {
-        height: 10px;
-        margin-bottom: 20px;
-    }
-    
-    .timer {
-        font-size: 1.2rem;
-        font-weight: bold;
-        color: #dc3545;
-    }
+    .question-card { background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); padding: 30px; margin-bottom: 30px; }
+    .question-number { display: inline-block; background: #0d6efd; color: white; width: 40px; height: 40px; border-radius: 50%; text-align: center; line-height: 40px; margin-right: 15px; font-weight: bold; }
+    .answer-option { border: 2px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s; }
+    .answer-option:hover { border-color: #0d6efd; background-color: #f8f9fa; }
+    .answer-option.selected { border-color: #198754; background-color: #d1e7dd; }
+    .progress { height: 10px; margin-bottom: 20px; }
+    .timer { font-size: 1.2rem; font-weight: bold; color: #dc3545; }
 </style>
 {% endblock %}
 
@@ -63,60 +20,58 @@
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center">
                 <h2 class="mb-0">{{ test.title }}</h2>
-                <div class="timer" id="timer">60:00</div>
+                <div class="timer" id="timer">--:--</div>
             </div>
             <div class="progress mt-3">
                 <div class="progress-bar" id="progressBar" style="width: 0%"></div>
             </div>
             <div class="d-flex justify-content-between">
-                <small>Вопрос <span id="currentQuestion">1</span> из <span id="totalQuestions">{{ test.questions|length }}</span></small>
-                <small>{{ test.subject }}</small>
+                <small>Вопрос <span id="currentQuestion">1</span> из <span id="totalQuestions">{{ questions|length }}</span></small>
+                <small>{{ test.subject ?? '' }}</small>
             </div>
         </div>
     </div>
-    
-    <form id="testForm" method="POST" action="#">
-        {% for question in test.questions %}
-        <div class="question-card" id="question-{{ loop.index }}" {% if loop.index != 1 %}style="display: none;"{% endif %}>
-            <div class="mb-4">
-                <span class="question-number">{{ loop.index }}</span>
-                <h4 class="d-inline">{{ question.text }}</h4>
+
+    <form id="testForm" method="POST" action="{{ path('app_test_submit', {'id': test.id}) }}">
+        <input type="hidden" name="attempt_id" value="{{ attempt.id }}">
+
+        {% for question in questions %}
+            <div class="question-card" data-question-index="{{ loop.index }}" {% if loop.index != 1 %}style="display: none;"{% endif %}>
+                <div class="mb-4">
+                    <span class="question-number">{{ loop.index }}</span>
+                    <h4 class="d-inline">{{ question.questionText }}</h4>
+                </div>
+
+                {% if question.questionType == 'single' %}
+                    {% for answer in question.answers %}
+                        <div class="answer-option" data-answer-index="{{ loop.index0 }}">
+                            <input type="radio"
+                                   name="answers[{{ loop.parent.loop.index0 }}]"
+                                   value="{{ loop.index0 }}"
+                                   style="display: none;">
+                            {{ answer.answerText }}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    {% for answer in question.answers %}
+                        <div class="answer-option" data-answer-index="{{ loop.index0 }}">
+                            <input type="checkbox"
+                                   name="answers[{{ loop.parent.loop.index0 }}][]"
+                                   value="{{ loop.index0 }}"
+                                   style="display: none;">
+                            {{ answer.answerText }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
             </div>
-            
-            {% if question.type == 'single' %}
-                {% for answer in question.answers %}
-                <div class="answer-option" onclick="selectAnswer({{ loop.index0 }}, {{ loop.parent.loop.index0 }})">
-                    <input type="radio" 
-                           name="answers[{{ loop.parent.loop.index0 }}]" 
-                           value="{{ loop.index0 }}"
-                           style="display: none;">
-                    {{ answer.text }}
-                </div>
-                {% endfor %}
-            {% else %}
-                {% for answer in question.answers %}
-                <div class="answer-option" onclick="toggleCheckbox(this, {{ loop.index0 }}, {{ loop.parent.loop.index0 }})">
-                    <input type="checkbox" 
-                           name="answers[{{ loop.parent.loop.index0 }}][]" 
-                           value="{{ loop.index0 }}"
-                           style="display: none;">
-                    {{ answer.text }}
-                </div>
-                {% endfor %}
-            {% endif %}
-        </div>
         {% endfor %}
-        
+
         <div class="d-flex justify-content-between mt-4">
-            <button type="button" class="btn btn-outline-secondary" id="prevBtn" onclick="prevQuestion()" disabled>
+            <button type="button" class="btn btn-outline-secondary" id="prevBtn" disabled>
                 <i class="bi bi-arrow-left"></i> Назад
             </button>
-            
             <div>
-                <button type="button" class="btn btn-outline-primary me-2" onclick="saveProgress()">
-                    Сохранить
-                </button>
-                <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">
+                <button type="button" class="btn btn-primary" id="nextBtn">
                     Далее <i class="bi bi-arrow-right"></i>
                 </button>
                 <button type="submit" class="btn btn-success" id="submitBtn" style="display: none;">
@@ -128,102 +83,115 @@
 </div>
 
 <script>
-let currentQuestion = 1;
-const totalQuestions = {{ test.questions|length }};
-let answers = {};
+    document.addEventListener('DOMContentLoaded', function() {
+        // Переменные
+        let currentQuestion = 1;
+        const totalQuestions = {{ questions|length }};
+        const answers = {};
 
-function updateProgress() {
-    const progress = ((currentQuestion - 1) / totalQuestions) * 100;
-    document.getElementById('progressBar').style.width = progress + '%';
-    document.getElementById('currentQuestion').textContent = currentQuestion;
-}
+        // Элементы DOM
+        const questionCards = document.querySelectorAll('.question-card');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const progressBar = document.getElementById('progressBar');
+        const currentQuestionSpan = document.getElementById('currentQuestion');
+        const timerDiv = document.getElementById('timer');
 
-function showQuestion(index) {
-    document.querySelectorAll('.question-card').forEach(card => {
-        card.style.display = 'none';
-    });
-    document.getElementById(`question-${index}`).style.display = 'block';
-    
-    document.getElementById('prevBtn').disabled = index === 1;
-    document.getElementById('nextBtn').style.display = index === totalQuestions ? 'none' : 'inline-block';
-    document.getElementById('submitBtn').style.display = index === totalQuestions ? 'inline-block' : 'none';
-    
-    updateProgress();
-}
-
-function selectAnswer(answerIndex, questionIndex) {
-    const questionDiv = document.getElementById(`question-${currentQuestion}`);
-    questionDiv.querySelectorAll('.answer-option').forEach(option => {
-        option.classList.remove('selected');
-        option.querySelector('input[type="radio"]').checked = false;
-    });
-    
-    const selectedOption = questionDiv.querySelectorAll('.answer-option')[answerIndex];
-    selectedOption.classList.add('selected');
-    selectedOption.querySelector('input[type="radio"]').checked = true;
-    
-    answers[questionIndex] = [answerIndex];
-}
-
-function toggleCheckbox(element, answerIndex, questionIndex) {
-    element.classList.toggle('selected');
-    const checkbox = element.querySelector('input[type="checkbox"]');
-    checkbox.checked = !checkbox.checked;
-    
-    if (!answers[questionIndex]) answers[questionIndex] = [];
-    
-    if (checkbox.checked) {
-        if (!answers[questionIndex].includes(answerIndex)) {
-            answers[questionIndex].push(answerIndex);
+        // Устанавливаем оставшееся время из сервера
+        let timeLeft = {{ remainingSeconds }};
+        function formatTime(sec) {
+            const minutes = Math.floor(sec / 60);
+            const seconds = sec % 60;
+            return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
-    } else {
-        const index = answers[questionIndex].indexOf(answerIndex);
-        if (index > -1) {
-            answers[questionIndex].splice(index, 1);
+        function updateTimer() {
+            timerDiv.textContent = formatTime(timeLeft);
+            if (timeLeft > 0) {
+                timeLeft--;
+                setTimeout(updateTimer, 1000);
+            } else {
+                document.getElementById('testForm').submit();
+            }
         }
-    }
-}
+        updateTimer();
 
-function nextQuestion() {
-    if (currentQuestion < totalQuestions) {
-        currentQuestion++;
-        showQuestion(currentQuestion);
-    }
-}
+        // Функция показа текущего вопроса
+        function showQuestion(index) {
+            questionCards.forEach((card, i) => {
+                card.style.display = (i+1 === index) ? 'block' : 'none';
+            });
+            const progress = ((index - 1) / totalQuestions) * 100;
+            progressBar.style.width = progress + '%';
+            currentQuestionSpan.textContent = index;
 
-function prevQuestion() {
-    if (currentQuestion > 1) {
-        currentQuestion--;
-        showQuestion(currentQuestion);
-    }
-}
+            prevBtn.disabled = (index === 1);
+            const isLast = (index === totalQuestions);
+            nextBtn.style.display = isLast ? 'none' : 'inline-block';
+            submitBtn.style.display = isLast ? 'inline-block' : 'none';
+        }
 
-function saveProgress() {
-    // Сохранение прогресса через AJAX
-    alert('Прогресс сохранен');
-}
+        // Обработка выбора ответа (радио/чекбокс)
+        function handleAnswerClick(optionDiv, qIndex, aIndex, isCheckbox = false) {
+            const input = optionDiv.querySelector('input');
+            if (!input) return;
 
-// Таймер
-let timeLeft = 60 * 60; // 60 минут в секундах
+            if (!isCheckbox) {
+                // radio: убираем выделение со всех в этом вопросе
+                const parentCard = optionDiv.closest('.question-card');
+                parentCard.querySelectorAll('.answer-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                    opt.querySelector('input').checked = false;
+                });
+                optionDiv.classList.add('selected');
+                input.checked = true;
+                answers[qIndex] = [aIndex];
+            } else {
+                // checkbox
+                optionDiv.classList.toggle('selected');
+                input.checked = !input.checked;
 
-function updateTimer() {
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
-    document.getElementById('timer').textContent = 
-        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    
-    if (timeLeft > 0) {
-        timeLeft--;
-        setTimeout(updateTimer, 1000);
-    } else {
-        document.getElementById('testForm').submit();
-    }
-}
+                if (!answers[qIndex]) answers[qIndex] = [];
+                if (input.checked) {
+                    if (!answers[qIndex].includes(aIndex)) answers[qIndex].push(aIndex);
+                } else {
+                    const idx = answers[qIndex].indexOf(aIndex);
+                    if (idx !== -1) answers[qIndex].splice(idx, 1);
+                }
+            }
+        }
 
-// Инициализация
-document.addEventListener('DOMContentLoaded', function() {
-    updateTimer();
-    updateProgress();
-});
+        // Навешиваем обработчики на все варианты ответов
+        questionCards.forEach((card, qIdx) => {
+            const qIndex = qIdx + 1;
+            const options = card.querySelectorAll('.answer-option');
+            options.forEach(option => {
+                const aIndex = parseInt(option.dataset.answerIndex);
+                const isCheckbox = option.querySelector('input[type="checkbox"]') !== null;
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    handleAnswerClick(option, qIndex, aIndex, isCheckbox);
+                });
+            });
+        });
+
+        // Кнопки навигации
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestion > 1) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestion < totalQuestions) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            }
+        });
+
+        // Инициализация
+        showQuestion(1);
+    });
 </script>
 {% endblock %}
