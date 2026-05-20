@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/teacher')]
 #[IsGranted('ROLE_TEACHER')]
@@ -103,7 +105,7 @@ class TeacherController extends AbstractController
     }
 
     #[Route('/test/new', name: 'app_teacher_test_new', methods: ['GET', 'POST'])]
-    public function newTest(Request $request, EntityManagerInterface $entityManager): Response
+    public function newTest(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         if ($request->isMethod('POST')) {
             $data = $request->request->all();
@@ -123,15 +125,30 @@ class TeacherController extends AbstractController
             $test->setTargetGroups($targetGroups);
 
             $questionsData = $data['questions'] ?? [];
+            $uploadedFiles = $request->files->all('questions'); // массив файлов [индекс_вопроса]['image']
 
             foreach ($questionsData as $qIndex => $qData) {
                 if (empty($qData['text'])) continue;
 
                 $question = new Question();
                 $question->setQuestionText($qData['text']);
-                $question->setQuestionType($qData['type'] ?? 'single');
+                $question->setQuestionType($qData['type'] ?? 'multiple'); // по умолчанию multiple
                 $question->setPoints($qData['points'] ?? 1);
                 $question->setOrderNum($qIndex + 1);
+
+                // Обработка изображения
+                if (isset($uploadedFiles[$qIndex]['image']) && $uploadedFiles[$qIndex]['image']->isValid()) {
+                    $file = $uploadedFiles[$qIndex]['image'];
+                    $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = $slugger->slug($originalFilename);
+                    $newFilename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
+                    try {
+                        $file->move($this->getParameter('questions_directory'), $newFilename);
+                        $question->setImage($newFilename);
+                    } catch (FileException $e) {
+                        $this->addFlash('error', 'Не удалось загрузить изображение для вопроса '.($qIndex+1));
+                    }
+                }
 
                 $answersData = $qData['answers'] ?? [];
                 $correctAnswers = $qData['correct'] ?? [];
@@ -163,7 +180,7 @@ class TeacherController extends AbstractController
     }
 
     #[Route('/test/{id}/edit', name: 'app_teacher_test_edit', methods: ['GET', 'POST'])]
-    public function editTest(Request $request, Test $test, EntityManagerInterface $entityManager): Response
+    public function editTest(Request $request, Test $test, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         if ($test->getCreatedBy() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
@@ -191,15 +208,33 @@ class TeacherController extends AbstractController
             $test->getQuestions()->clear();
 
             $questionsData = $data['questions'] ?? [];
+            $uploadedFiles = $request->files->all('questions');
 
             foreach ($questionsData as $qIndex => $qData) {
                 if (empty($qData['text'])) continue;
 
                 $question = new Question();
                 $question->setQuestionText($qData['text']);
-                $question->setQuestionType($qData['type'] ?? 'single');
+                $question->setQuestionType($qData['type'] ?? 'multiple');
                 $question->setPoints($qData['points'] ?? 1);
                 $question->setOrderNum($qIndex + 1);
+
+                // Обработка изображения
+                if (isset($uploadedFiles[$qIndex]['image']) && $uploadedFiles[$qIndex]['image']->isValid()) {
+                    $file = $uploadedFiles[$qIndex]['image'];
+                    $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = $slugger->slug($originalFilename);
+                    $newFilename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
+                    try {
+                        $file->move($this->getParameter('questions_directory'), $newFilename);
+                        $question->setImage($newFilename);
+                    } catch (FileException $e) {
+                        $this->addFlash('error', 'Не удалось загрузить изображение для вопроса '.($qIndex+1));
+                    }
+                } elseif (isset($qData['existing_image']) && $qData['existing_image']) {
+                    // сохраняем старое изображение, если не загружено новое
+                    $question->setImage($qData['existing_image']);
+                }
 
                 $answersData = $qData['answers'] ?? [];
                 $correctAnswers = $qData['correct'] ?? [];

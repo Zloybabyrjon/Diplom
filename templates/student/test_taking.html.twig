@@ -11,6 +11,7 @@
     .answer-option.selected { border-color: #198754; background-color: #d1e7dd; }
     .progress { height: 10px; margin-bottom: 20px; }
     .timer { font-size: 1.2rem; font-weight: bold; color: #dc3545; }
+    .question-image { max-width: 100%; margin: 15px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 </style>
 {% endblock %}
 
@@ -41,6 +42,13 @@
                     <span class="question-number">{{ loop.index }}</span>
                     <h4 class="d-inline">{{ question.questionText }}</h4>
                 </div>
+
+                {# Отображение изображения, если есть #}
+                {% if question.image %}
+                    <div class="text-center">
+                        <img src="{{ asset('uploads/questions/' ~ question.image) }}" class="question-image" alt="Изображение к вопросу">
+                    </div>
+                {% endif %}
 
                 {% if question.questionType == 'single' %}
                     {% for answer in question.answers %}

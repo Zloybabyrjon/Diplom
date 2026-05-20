@@ -7,10 +7,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Scheb\TwoFactorBundle\Model\Email\TwoFactorInterface; // <-- Добавлен импорт
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'users')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFactorInterface // <-- Реализуем интерфейс
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -42,12 +43,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $created_at = null;
 
+    // Новое поле: код двухфакторной аутентификации
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $authCode = null;
+
     public function __construct()
     {
         $this->created_at = new \DateTime();
     }
 
-    // Геттеры и сеттеры...
+    // --- Геттеры и сеттеры существующих полей ---
 
     public function getId(): ?int { return $this->id; }
     public function getEmail(): ?string { return $this->email; }
@@ -65,7 +70,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getCreatedAt(): ?\DateTimeInterface { return $this->created_at; }
     public function setCreatedAt(?\DateTimeInterface $created_at): self { $this->created_at = $created_at; return $this; }
 
-    // Методы интерфейса UserInterface
+    // --- Методы интерфейса UserInterface ---
     public function getRoles(): array
     {
         return [$this->role === 'teacher' ? 'ROLE_TEACHER' : 'ROLE_STUDENT'];
@@ -73,4 +78,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials(): void {}
     public function getUserIdentifier(): string { return $this->email; }
+
+    // --- Методы интерфейса TwoFactorInterface ---
+    public function isEmailAuthEnabled(): bool
+    {
+        // Включаем двухфакторную аутентификацию только для преподавателей
+        return $this->role === 'teacher';
+    }
+
+    public function getEmailAuthRecipient(): string
+    {
+        // Код будет отправлен на email пользователя
+        return $this->email;
+    }
+
+    public function getEmailAuthCode(): string
+    {
+        if ($this->authCode === null) {
+            throw new \LogicException('Код двухфакторной аутентификации не установлен.');
+        }
+        return $this->authCode;
+    }
+
+    public function setEmailAuthCode(string $authCode): void
+    {
+        $this->authCode = $authCode;
+    }
 }

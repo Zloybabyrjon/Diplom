@@ -35,7 +35,7 @@
 <div class="container mt-4">
     <h1>{{ test is defined and test ? 'Редактировать тест' : 'Создать новый тест' }}</h1>
 
-    <form method="post" id="testForm">
+    <form method="post" id="testForm" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="title" class="form-label">Название теста</label>
             <input type="text" class="form-control" id="title" name="title" value="{{ test.title ?? '' }}" required>
@@ -51,13 +51,11 @@
             <input type="text" class="form-control" id="subject" name="subject" value="{{ test.subject ?? '' }}">
         </div>
 
-        {# Поле для времени #}
         <div class="mb-3">
             <label for="timeLimit" class="form-label">Время на тест (минут)</label>
             <input type="number" class="form-control" id="timeLimit" name="timeLimit" value="{{ test.timeLimit ?? 30 }}" min="1" step="1">
         </div>
 
-        {# Поле выбора групп #}
         <div class="mb-3">
             <label class="form-label">Доступно для групп</label>
             <select class="form-select" name="targetGroups[]" multiple size="5">
@@ -100,18 +98,14 @@
             <label class="form-label">Текст вопроса</label>
             <input type="text" class="form-control" name="questions[__INDEX__][text]" required>
         </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="form-label">Тип вопроса</label>
-                <select class="form-select" name="questions[__INDEX__][type]">
-                    <option value="single">Один правильный</option>
-                    <option value="multiple">Несколько правильных</option>
-                </select>
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Баллы</label>
-                <input type="number" class="form-control" name="questions[__INDEX__][points]" value="1" min="1" step="1">
-            </div>
+        <div class="mb-3">
+    <label class="form-label">Изображение (необязательно)</label>
+    <input type="file" class="form-control" name="questions[__INDEX__][image]" accept="image/*">
+    <div class="form-text">Поддерживаются JPG, PNG, GIF.</div>
+</div>
+        <div class="mb-3">
+            <label class="form-label">Баллы</label>
+            <input type="number" class="form-control" name="questions[__INDEX__][points]" value="1" min="1" step="1">
         </div>
         <div class="answers-container">
             <label class="form-label">Варианты ответов</label>

@@ -7,14 +7,20 @@
         <label class="form-label">Текст вопроса</label>
         <input type="text" class="form-control" name="questions[{{ index }}][text]" value="{{ question.questionText }}" required>
     </div>
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <label class="form-label">Тип вопроса</label>
-            <select class="form-select" name="questions[{{ index }}][type]">
-                <option value="single" {{ question.questionType == 'single' ? 'selected' : '' }}>Один правильный</option>
-                <option value="multiple" {{ question.questionType == 'multiple' ? 'selected' : '' }}>Несколько правильных</option>
-            </select>
+    <div class="mb-3">
+    <label class="form-label">Изображение</label>
+    {% if question.image %}
+        <div class="mb-2">
+            <img src="{{ asset('uploads/questions/' ~ question.image) }}" alt="Изображение вопроса" style="max-width: 200px; max-height: 150px;">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="questions[{{ index }}][delete_image]" value="1" id="delete_image_{{ index }}">
+                <label class="form-check-label" for="delete_image_{{ index }}">Удалить текущее изображение</label>
+            </div>
         </div>
+    {% endif %}
+    <input type="file" class="form-control" name="questions[{{ index }}][image]" accept="image/*">
+    <div class="form-text">Загрузите новое изображение, чтобы заменить текущее.</div>
+</div>
         <div class="col-md-6">
             <label class="form-label">Баллы</label>
             <input type="number" class="form-control" name="questions[{{ index }}][points]" value="{{ question.points }}" min="1" step="1">
